@@ -5,9 +5,9 @@ from database import DB
 
 
 def main():
-    print("Sample")
     db = DB.toy()
-    db.dump()
+    # db.dump()
+    db.visualize()
 
 
 if __name__ == '__main__':

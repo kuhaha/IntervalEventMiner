@@ -5,6 +5,7 @@ class Event(object):
         self.etype = etype
         self.start = start
         self.end = end
+        self.width = self.end - self.start
 
     def __eq__(self, that):
         return self.etype == that.etype and self.start == that.start and self.end == that.end
