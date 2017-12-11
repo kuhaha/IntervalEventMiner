@@ -29,6 +29,8 @@ class DB(object):
         for et in self.event_set:
             self.colors[et] = self.cpt[counter]
             counter += 1
+        for key in self.colors:
+            print(key, self.colors[key])
 
     def __len__(self):
         return len(self.EL)
