@@ -53,6 +53,23 @@ class Relation(enum.Enum):
         else:
             return "equal"
 
+    @staticmethod
+    def int2rel(value):
+        if value == 0:
+            return Relation.Before
+        elif value == 1:
+            return Relation.Meet
+        elif value == 2:
+            return Relation.Overlap
+        elif value == 3:
+            return Relation.Start
+        elif value == 4:
+            return Relation.FinishedBy
+        elif value == 5:
+            return Relation.Contain
+        else:
+            return Relation.Equal
+
 def relation(e1, e2):
     # Before, Meet, Overlap, Start, Finished-by, Contain, Equal
     ans = [False for _ in Relation]
@@ -107,13 +124,37 @@ class CompositeEvent(object):
             return "({};[{}, {}])".format(self.getstr(), self.start, self.end)
 
 
+def gen_composite(el):
+    if len(el) == 0:
+        return ""
+    elif len(el) == 1:
+        return el[0]
+    else:
+        ans = relation(el[0], el[1])
+        ai = ans.index(True)
+        rel = Relation.int2rel(ai)
+        ehead = CompositeEvent(el[0], el[1], rel)
+        for idx in range(2, len(el)):
+            ans = relation(ehead, el[idx])
+            ai = ans.index(True)
+            rel = Relation.int2rel(ai)
+            ehead = CompositeEvent(ehead, el[idx], rel)
+        return ehead
+
+
 if __name__ == '__main__':
     e1 = Event("A", 1, 4)
-    e2 = Event("B", 2, 3)
-    # ans = relation(e1, e2)
-    # print(str(e1), str(e2), ans)
+    e2 = Event("B", 2, 5)
+    ans = relation(e1, e2)
+    print(ans)
 
     ce1 = CompositeEvent(e1)
     ce2 = CompositeEvent(e1, e2, Relation.Contain)
-    ce3 = CompositeEvent(ce1, ce2, Relation.Meet, True)
+    ce3 = CompositeEvent(ce2, ce1, Relation.Meet, True)
     print(ce3)
+
+
+    e3 = Event("C", 3, 8)
+    e4 = Event("D", 6, 7)
+    cEL = gen_composite([e1, e2, e3, e4])
+    print(cEL)
